@@ -35,7 +35,7 @@ apt-get install -y --no-install-recommends \
         libjpeg8-dev \
         libjpeg-turbo8-dev \
         libopenimageio-dev \
-        libopenimageio2.4t64 \
+        libopenimageio2.2 \
         openimageio-tools \
         libopenexr-dev \
         liblapack-dev \

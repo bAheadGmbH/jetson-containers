@@ -20,6 +20,24 @@ else
     exit 1
 fi
 
+# Workaround: JetPack 6.2 image is missing DLA compiler and apt repo config
+# Manually download and install the package
+DLA_DEB="nvidia-l4t-dla-compiler_36.4.7-20250918154033_arm64.deb"
+DLA_URL="https://repo.download.nvidia.com/jetson/common/pool/main/n/nvidia-l4t-dla-compiler/${DLA_DEB}"
+echo "Downloading missing DLA compiler package..."
+if command -v wget >/dev/null 2>&1; then
+    wget -q "$DLA_URL" -O "/tmp/$DLA_DEB"
+elif command -v curl >/dev/null 2>&1; then
+    curl -sL "$DLA_URL" -o "/tmp/$DLA_DEB"
+else
+    echo "Error: Neither wget nor curl found. Cannot download DLA compiler."
+    exit 1
+fi
+echo "Installing DLA compiler (extracting to bypass deps)..."
+dpkg -x "/tmp/$DLA_DEB" /
+ldconfig
+rm "/tmp/$DLA_DEB"
+
 python3 setup.py install --plugins
 
 sed 's|^set(CUDA_ARCHITECTURES.*|#|g' -i CMakeLists.txt
